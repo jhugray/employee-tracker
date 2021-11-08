@@ -11,13 +11,13 @@ VALUES
 INSERT INTO role
   (id, title, salary, department_id)
 VALUES
-  (1, 'Human Resources Lead', '60000.00', 1),
-  (2, 'Accountant', '75000.00', 2),
-  (3, 'Sales rep', '70000.00', 3),
-  (4, 'Reception', '60000.00', 4),
-  (5, 'Manager', '85000.00', 4),
-  (6, 'Customer service rep', '55000.00', 6),
-  (7, 'Warehouse worker', '50000.00', 5);
+  (1, 'Human Resources Lead', 60000.00, 1),
+  (2, 'Accountant', 75000.00, 2),
+  (3, 'Sales rep', 70000.00, 3),
+  (4, 'Reception', 60000.00, 4),
+  (5, 'Manager', 85000.00, 4),
+  (6, 'Customer service rep', 55000.00, 6),
+  (7, 'Warehouse worker', 50000.00, 5);
 
 INSERT INTO employee
   (first_name, last_name, role_id)
