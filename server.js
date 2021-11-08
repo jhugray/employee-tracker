@@ -2,11 +2,12 @@ const mysql = require('mysql2');
 const db = require('./db/connection');
 const inquirer = require('inquirer');
 const cTable = require('console.table');
-const {getAllEmployees, getAllDepartments} = require('./routes/employeeRoutes');
+const {getAllEmployees, getAllDepartments, getAllRoles} = require('./routes/employeeRoutes');
 
-
+const welcomeMessage = "Employee Tracker"
 
 function startProgram() {
+  console.log(welcomeMessage);
   return inquirer
     .prompt ([
       {
@@ -23,16 +24,30 @@ function startProgram() {
           getAllDepartments();
           startProgram();
           break;
+        case "View all roles":
+          getAllRoles();
+          startProgram()
+          break;
         case "View all employees":
           getAllEmployees();
           startProgram()
           break;
-        //  db.query(`SELECT * FROM employee`, (err, row) => {
-        //   if (err) {
-        //     console.log(err);
-        //   }
-        //   console.log(row);
-        // }); 
+        case "Add a department":
+          addDepartment();
+          startProgram()
+          break;
+        case "Add a role":
+          addRole();
+          startProgram()
+          break;
+        case "Add an employee":
+          addEmployee();
+          startProgram()
+          break;
+        case "Update an employee role":
+          updateEmployeeRole();
+          startProgram()
+          break;
       }
   })
 }
