@@ -2,7 +2,7 @@ const mysql = require('mysql2');
 const db = require('./db/connection');
 const inquirer = require('inquirer');
 const cTable = require('console.table');
-const {getAllEmployees, getAllDepartments, getAllRoles} = require('./routes/employeeRoutes');
+const {getAllEmployees, getAllDepartments, getAllRoles, addDepartment} = require('./routes/employeeRoutes');
 
 const welcomeMessage = "Employee Tracker"
 
@@ -33,9 +33,19 @@ function startProgram() {
           startProgram()
           break;
         case "Add a department":
-          addDepartment();
-          startProgram()
-          break;
+          return inquirer
+            .prompt([
+              {
+                type: "input",
+                name: "addDept",
+                message: "What is the name of the department you would like to add?"
+              }
+          ])
+            .then((answers) => {
+              const deptName = answers.addDept;
+              addDepartment(deptName);
+              startProgram()
+            })
         case "Add a role":
           addRole();
           startProgram()

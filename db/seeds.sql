@@ -20,19 +20,19 @@ VALUES
   (7, 'Warehouse worker', 50000.00, 5);
 
 INSERT INTO employee
-  (first_name, last_name, role_id)
+  (id, first_name, last_name, manager_id, role_id)
 VALUES
-  ('Michael', 'Scott', 5),
-  ('Pam', 'Beesly', 4),
-  ('Jim', 'Halpert', 3),
-  ('Stanley', 'Hudson', 3),
-  ('Phyliss', 'Lapin-Vance', 3),
-  ('Dwight', 'Schrute', 3),
-  ('Angela', 'Martin', 2),
-  ('Kelly', 'Kapoor', 6),
-  ('Kevin', 'Malone', 2),
-  ('Oscar', 'Martinez', 2),
-  ('Toby', 'Flenderson', 1),
-  ('Daryl', 'Philbin', 7),
-  ('Madge', 'Madsen', 7);
+  (1, 'Michael', 'Scott', NULL, 5),
+  (2, 'Pam', 'Beesly', 1, 4),
+  (3, 'Jim', 'Halpert', 1, 3),
+  (4, 'Stanley', 'Hudson', 1, 3),
+  (5, 'Phyliss', 'Lapin-Vance', 1, 3),
+  (6, 'Dwight', 'Schrute', 1, 3),
+  (7, 'Angela', 'Martin', 1, 2),
+  (8, 'Kelly', 'Kapoor', 1, 6),
+  (9, 'Kevin', 'Malone', 1, 2),
+  (10, 'Oscar', 'Martinez', 1, 2),
+  (11, 'Toby', 'Flenderson', NULL, 1),
+  (12, 'Daryl', 'Philbin', 1, 7),
+  (13, 'Madge', 'Madsen', 12, 7);
 

@@ -1,7 +1,13 @@
+const { get } = require('http');
 const db = require('../db/connection');
 
 const getAllEmployees = () => {
-  db.query(`SELECT * FROM employee`, function (err, results) {
+  const sql = `SELECT employee.*, role.title
+                AS role_title
+                FROM employee
+                LEFT JOIN role
+                ON employee.role_id = role.id`
+  db.query(sql, function (err, results) {
     if (err) {
       console.log(err);
     } 
@@ -32,10 +38,27 @@ const getAllRoles = () => {
   });
 };
 
+const addDepartment = (deptName) => {
+  const sql = `INSERT INTO department (name) VALUES (?)`;
+  const params = [deptName];
+  db.query(sql, params, function (err, results) {
+    if (err) {
+      console.log(err);
+    }
+    getAllDepartments();
+  });
+};
+
 
 
 module.exports = {
   getAllEmployees, 
   getAllDepartments,
   getAllRoles,
+  addDepartment
 }
+
+
+
+
+
