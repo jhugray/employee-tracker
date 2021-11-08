@@ -49,13 +49,24 @@ const addDepartment = (deptName) => {
   });
 };
 
+const addRole = (roleTitle, roleSalary, roleDept) => {
+  const sql = `INSERT INTO role (title, salary, department_name) VALUES (?, ?, ?)`;
+  const params = [roleTitle, roleSalary, roleDept];
+  db.query(sql, params, function (err, results) {
+    if (err) {
+      console.log(err);
+    }
+    getAllRoles();
+  });
+};
 
 
 module.exports = {
   getAllEmployees, 
   getAllDepartments,
   getAllRoles,
-  addDepartment
+  addDepartment,
+  addRole
 }
 
 
