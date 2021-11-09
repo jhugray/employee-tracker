@@ -105,7 +105,7 @@ startProgram();
 
 
 
-
+// figure out manager "join", and class functions for holding array etc
 
 // Set up API routes, joining employee/dept tables etc as needed where data is shared. 
 // Add manager ID to the employee table in the seed file

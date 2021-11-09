@@ -2,12 +2,24 @@ const { get } = require('http');
 const db = require('../db/connection');
 
 const getAllEmployees = () => {
-  const sql = `SELECT employee.*, role.title
-                AS role_title
-                FROM employee
-                LEFT JOIN role
-                ON employee.role_id = role.id`
-  db.query(sql, function (err, results) {
+  const sql1 = `SELECT
+                  employee.id,
+                  employee.first_name,
+                  employee.last_name,
+                  employee.manager_id,
+                  manager.first_name as ManagerName,
+                  manager.last_name as ManagerSurname
+                  FROM employee employee
+                  JOIN employee manager
+                  ON employee.manager_id = manager.id`
+
+  const sql2 = `SELECT employee.*, role.title
+                  AS role_title
+                  FROM employee
+                  LEFT JOIN role
+                  ON employee.role_id = role.id`
+
+  db.query(sql1, sql2, function (err, results) {
     if (err) {
       console.log(err);
     } 
