@@ -6,15 +6,15 @@ const {getAllEmployees, getAllDepartments, getAllRoles, addDepartment, addRole} 
 
 const welcomeMessage = "Employee Tracker"
 
-// const listRoles = () => {
-//   const sql = `SELECT title FROM roles`
-//   db.query(sql, function (err, results) {
-//     if (err) {
-//       console.log(err);
-//     } 
-//     console.log;
-//   });
-// };
+const listRoles = () => {
+  const sql = `SELECT id, title FROM roles`
+  db.query(sql, function (err, results) {
+    if (err) {
+      console.log(err);
+    } 
+    console.log;
+  });
+};
 
 function startProgram() {
   console.log(welcomeMessage);
@@ -69,12 +69,12 @@ function startProgram() {
               name: "addRoleSalary",
               message: "What is the salary for the role?"
             },
-            // {
-            //   type: "list",
-            //   name: "addRoleDept",
-            //   message: "Which department does the role belong to?",
-            //   choices: listRoles();
-            // }
+            {
+              type: "choice",
+              name: "addRoleDept",
+              message: "Which department does the role belong to?",
+              choices: listRoles()
+            }
         ])
           .then((answers) => {
             const roleTitle = answers.addRoleTitle;

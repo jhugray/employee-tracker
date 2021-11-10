@@ -1,30 +1,35 @@
-const { get } = require('http');
 const db = require('../db/connection');
 
 const getAllEmployees = () => {
-  const sql1 = `SELECT
+ 
+  const sql = `SELECT
                   employee.id,
                   employee.first_name,
                   employee.last_name,
+                  role.title AS role_title,
                   employee.manager_id,
-                  manager.first_name as ManagerName,
-                  manager.last_name as ManagerSurname
+                  CONCAT(manager.first_name, " ", manager.last_name) as ManagerName
                   FROM employee employee
                   JOIN employee manager
-                  ON employee.manager_id = manager.id`
-
-  const sql2 = `SELECT employee.*, role.title
-                  AS role_title
-                  FROM employee
+                  ON employee.manager_id = manager.id
                   LEFT JOIN role
                   ON employee.role_id = role.id`
 
-  db.query(sql1, sql2, function (err, results) {
+  db.query(sql, function (err, results) {
     if (err) {
       console.log(err);
-    } 
+    }
+    console.log(); 
     console.table(results);
   });
+  // db.query(sql2, function (err, results) {
+  //   if (err) {
+  //     console.log(err);
+  //   } 
+  //   console.table(results);
+  // });
+
+  // console.table(results);
 };
 
 const getAllDepartments = () => {
@@ -72,6 +77,7 @@ const addRole = (roleTitle, roleSalary, roleDept) => {
   });
 };
 
+// const addEmployee = (employee_id, first_name, last_name, manager_id, role_id)
 
 module.exports = {
   getAllEmployees, 

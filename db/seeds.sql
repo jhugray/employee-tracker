@@ -1,15 +1,15 @@
-INSERT INTO department
-  (name, dept_id)
+  INSERT INTO department
+  (id, name)
 VALUES
-  ('Human Resources', 1),
-  ('Accounting', 2),
-  ('Sales', 3),
-  ('Administration', 4),
-  ('Warehouse', 5),
-  ('Customer Service', 6);
+  (1, 'Human Resources'),
+  (2, 'Accounting'),
+  (3, 'Sales'),
+  (4, 'Administration'),
+  (5, 'Warehouse'),
+  (6, 'Customer Service');
 
 INSERT INTO role
-  (role_id, title, salary, department_id)
+  (id, title, salary, department_id)
 VALUES
   (1, 'Human Resources Lead', 60000.00, 1),
   (2, 'Accountant', 75000.00, 2),
@@ -20,7 +20,7 @@ VALUES
   (7, 'Warehouse worker', 50000.00, 5);
 
 INSERT INTO employee
-  (employee_id, first_name, last_name, manager_id, role_id)
+  (id, first_name, last_name, manager_id, role_id)
 VALUES
   (1, 'Michael', 'Scott', NULL, 5),
   (2, 'Pam', 'Beesly', 1, 4),
@@ -35,4 +35,7 @@ VALUES
   (11, 'Toby', 'Flenderson', NULL, 1),
   (12, 'Daryl', 'Philbin', 1, 7),
   (13, 'Madge', 'Madsen', 12, 7);
+
+
+
 
