@@ -2,23 +2,13 @@ const mysql = require('mysql2');
 const db = require('./db/connection');
 const inquirer = require('inquirer');
 const cTable = require('console.table');
-const {getAllEmployees, getAllDepartments, getAllRoles, addDepartment, addRole} = require('./routes/employeeRoutes');
+const {getAllEmployees, getAllDepartments, getAllRoles, addDepartment, addRole, addEmployee, updateEmployee} = require('./routes/employeeRoutes');
 
 const welcomeMessage = "Employee Tracker"
 
-const listRoles = () => {
-  const sql = `SELECT id, title FROM roles`
-  db.query(sql, function (err, results) {
-    if (err) {
-      console.log(err);
-    } 
-    console.log;
-  });
-};
-
 function startProgram() {
   console.log(welcomeMessage);
-  return inquirer
+  inquirer
     .prompt ([
       {
         name: "empTracker",
@@ -43,7 +33,7 @@ function startProgram() {
           startProgram()
           break;
         case "Add a department":
-          return inquirer
+          inquirer
             .prompt([
               {
                 type: "input",
@@ -51,45 +41,124 @@ function startProgram() {
                 message: "What is the name of the department you would like to add?"
               }
           ])
-            .then((answers) => {
-              const deptName = answers.addDept;
-              addDepartment(deptName);
-              startProgram()
-            })
-        case "Add a role":
-          return inquirer
-          .prompt([
-            {
-              type: "input",
-              name: "addRoleTitle",
-              message: "What is the title of the role you would like to add?"
-            },
-            {
-              type: "input",
-              name: "addRoleSalary",
-              message: "What is the salary for the role?"
-            },
-            {
-              type: "choice",
-              name: "addRoleDept",
-              message: "Which department does the role belong to?",
-              choices: listRoles()
-            }
-        ])
           .then((answers) => {
-            const roleTitle = answers.addRoleTitle;
-            const roleSalary = answers.addRoleSalary;
-            // const roleDept = answers.addRoleDept;
-            addRole(roleTitle, roleSalary, roleDept);
+            const deptName = answers.addDept;
+            addDepartment(deptName);
             startProgram()
           })
+          break;
+        case "Add a role":
+          const sql = `SELECT id AS value, name FROM department`
+          db.query(sql, function (err, results) {
+            if (err) {
+              console.log(err);
+            }
+            inquirer
+            .prompt([
+              {
+                type: "input",
+                name: "addRoleTitle",
+                message: "What is the title of the role you would like to add?"
+              },
+              {
+                type: "input",
+                name: "addRoleSalary",
+                message: "What is the salary for the role?"
+              },
+              {
+                type: "list",
+                name: "addRoleDept",
+                message: "Which department does the role belong to?",
+                choices: results
+              }
+          ])
+            .then((answers) => {
+              const roleTitle = answers.addRoleTitle;
+              const roleSalary = answers.addRoleSalary;
+              const roleDept = answers.addRoleDept;
+              addRole(roleTitle, roleSalary, roleDept);
+              startProgram()
+            })
+          });
+          break;
         case "Add an employee":
-          addEmployee();
-          startProgram()
+          db.query(`SELECT id AS value, title AS name FROM role`, function (err, roleResults) {
+            if (err) {
+              console.log(err);
+            }
+            db.query(`SELECT id AS value, CONCAT(first_name, " ", last_name) AS name FROM employee`, function (err, managerResults) {
+              if (err) {
+                console.log(err);
+              }
+              inquirer
+              .prompt([
+                {
+                  type: "input",
+                  name: "addEmployeeFirstName",
+                  message: "What is the first name of the employee you would like to add?"
+                },
+                {
+                  type: "input",
+                  name: "addEmployeeLastName",
+                  message: "What is the last name of the employee you would like to add?"
+                },
+                {
+                  type: "list",
+                  name: "addEmployeeRole",
+                  message: "What is role of the employee?",
+                  choices: roleResults
+                },
+                {
+                  type: "list",
+                  name: "addEmployeeManager",
+                  message: "Who is the employee's manager?",
+                  choices: managerResults
+                }
+            ])
+              .then((answers) => {
+                const empFirstName = answers.addEmployeeFirstName;
+                const empLastName = answers.addEmployeeLastName;
+                const empRole = answers.addEmployeeRole;
+                const empManager = answers.addEmployeeManager
+                addEmployee(empFirstName, empLastName, empRole, empManager);
+                startProgram()
+              })
+            });
+          });
           break;
         case "Update an employee role":
-          updateEmployeeRole();
-          startProgram()
+          db.query(`SELECT id AS value, title AS name FROM role`, function (err, roleResults) {
+            if (err) {
+              console.log(err);
+            }
+            db.query(`SELECT id AS value, CONCAT(first_name, " ", last_name) AS name FROM employee`, function (err, employeeResults) {
+              if (err) {
+                console.log(err);
+              }
+              inquirer
+              .prompt([
+                {
+                  type: "list",
+                  name: "updatedEmployee",
+                  message: "Who is the employee you wish to update?",
+                  choices: employeeResults
+                },
+                {
+                  type: "list",
+                  name: "addUpdatedRole",
+                  message: "What is the new role of the employee? If the role is a new role in itself, please first add the role using the \"Add Role\" feature.",
+                  choices: roleResults
+                },
+              
+            ])
+              .then((answers) => {
+                const updatedEmp = answers.updatedEmployee;
+                const newRole = answers.addUpdatedRole;
+                updateEmployee(updatedEmp, newRole);
+                startProgram()
+              })
+            });
+          });
           break;
       }
   })

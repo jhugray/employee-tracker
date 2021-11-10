@@ -22,14 +22,6 @@ const getAllEmployees = () => {
     console.log(); 
     console.table(results);
   });
-  // db.query(sql2, function (err, results) {
-  //   if (err) {
-  //     console.log(err);
-  //   } 
-  //   console.table(results);
-  // });
-
-  // console.table(results);
 };
 
 const getAllDepartments = () => {
@@ -37,6 +29,7 @@ const getAllDepartments = () => {
     if (err) {
       console.log(err);
     }
+    console.log();
     console.table(results);
   });
 };
@@ -66,25 +59,45 @@ const addDepartment = (deptName) => {
   });
 };
 
-const addRole = (roleTitle, roleSalary, roleDept) => {
-  const sql = `INSERT INTO role (title, salary, department_name) VALUES (?, ?, ?)`;
-  const params = [roleTitle, roleSalary, roleDept];
+const addRole = (roleTitle, roleSalary, roleDeptId) => {
+  const sql = `INSERT INTO role (title, salary, department_id) VALUES (?, ?, ?)`;
+  const params = [roleTitle, roleSalary, roleDeptId];
   db.query(sql, params, function (err, results) {
     if (err) {
       console.log(err);
     }
-    getAllRoles();
   });
 };
 
-// const addEmployee = (employee_id, first_name, last_name, manager_id, role_id)
+const addEmployee = (empFirstName, empLastName, empRole, empManager) => {
+  const sql = `INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES (?, ?, ?, ?)`;
+  const params = [empFirstName, empLastName, empRole, empManager];
+  db.query(sql, params, function (err, results) {
+    if (err) {
+      console.log(err);
+    }
+  });
+  };
+
+const updateEmployee = (updatedEmp, newRole) => {
+  const sql = `UPDATE employee SET role_id = ? WHERE id = ?`
+  const params = [newRole, updatedEmp]
+  db.query(sql, params, function (err, results) {
+    if (err) {
+      console.log(err);
+    }
+  });
+}
+
 
 module.exports = {
   getAllEmployees, 
   getAllDepartments,
   getAllRoles,
   addDepartment,
-  addRole
+  addRole,
+  addEmployee,
+  updateEmployee
 }
 
 
