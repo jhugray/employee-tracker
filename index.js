@@ -2,7 +2,9 @@ const mysql = require('mysql2');
 const db = require('./db/connection');
 const inquirer = require('inquirer');
 const cTable = require('console.table');
-const {getAllEmployees, getAllDepartments, getAllRoles, addDepartment, addRole, addEmployee, updateEmployee} = require('./routes/employeeRoutes');
+const {getAllEmployees, getAllDepartments, getAllRoles, addDepartment, 
+  addRole, addEmployee, updateEmployeeRole, updateEmployeeManager,
+  getEmpByManager, getEmpByDepartment} = require('./routes/employeeRoutes');
 
 const welcomeMessage = "Employee Tracker"
 
@@ -15,7 +17,8 @@ function startProgram() {
         type: "list",
         message: "Welcome to the Employee Tracker. What would you like to do?",
         choices: ["View all departments", "View all roles", "View all employees", "Add a department", "Add a role", 
-        "Add an employee", "Update an employee role"]
+        "Add an employee", "Update an employee role", "Update an employee's manager", "View employees by Manager",
+        "View employees by department"]
       }
     ])
     .then ((answer) => {
@@ -48,8 +51,8 @@ function startProgram() {
           })
           break;
         case "Add a role":
-          const sql = `SELECT id AS value, name FROM department`
-          db.query(sql, function (err, results) {
+          const roleSql = `SELECT id AS value, name FROM department`
+          db.query(roleSql, function (err, results) {
             if (err) {
               console.log(err);
             }
@@ -152,15 +155,99 @@ function startProgram() {
               
             ])
               .then((answers) => {
-                const updatedEmp = answers.updatedEmployee;
+                const updatedEmpR = answers.updatedEmployee;
                 const newRole = answers.addUpdatedRole;
-                updateEmployee(updatedEmp, newRole);
+                updateEmployeeRole(updatedEmpR, newRole);
                 startProgram()
               })
             });
           });
           break;
-      }
+          case "Update an employee's manager":
+          db.query(`SELECT manager_id AS value, CONCAT(first_name, " ", last_name) AS name FROM employee`, function (err, managerResults) {
+            if (err) {
+              console.log(err);
+            }
+            db.query(`SELECT id AS value, CONCAT(first_name, " ", last_name) AS name FROM employee`, function (err, employeeResults) {
+              if (err) {
+                console.log(err);
+              }
+              inquirer
+              .prompt([
+                {
+                  type: "list",
+                  name: "updatedEmployee",
+                  message: "Who is the employee you wish to update?",
+                  choices: employeeResults
+                },
+                {
+                  type: "list",
+                  name: "addUpdatedManager",
+                  message: "Who is the employee's new manager?",
+                  choices: managerResults
+                },
+              
+            ])
+              .then((answers) => {
+                const updatedEmpM = answers.updatedEmployee;
+                const newManager = answers.addUpdatedManager;
+                updateEmployeeManager(updatedEmpM, newManager);
+                startProgram()
+              })
+            });
+          });
+          break;
+          case "View employees by Manager":
+            const empByManSql = `SELECT DISTINCT manager.id AS value, 
+                          CONCAT(manager.first_name, " ", manager.last_name) AS name 
+                          FROM employee employee
+                          JOIN employee manager
+                          ON employee.manager_id = manager.id`
+            db.query(empByManSql, function (err, managerResults) {
+              if (err) {
+                console.log(err);
+              }
+              inquirer
+              .prompt ([
+              {
+                type: "list",
+                name: "viewByManager",
+                message: "Please select the manager whose employees you wish to view.",
+                choices: managerResults
+              },
+            
+            ])
+            .then((answers) => {
+              const managerID = answers.viewByManager;
+              getEmpByManager(managerID);
+              startProgram()
+            })
+            });
+            break;
+            case "View employees by department":
+            const empByDeptSql = `SELECT id AS value, name AS name FROM department`
+            db.query(empByDeptSql, function (err, departmentResults) {
+              if (err) {
+                console.log(err);
+              }
+              inquirer
+              .prompt ([
+              {
+                type: "list",
+                name: "viewByDepartment",
+                message: "Please select the department whose employees you wish to view.",
+                choices: departmentResults
+              },
+            
+          ])
+            .then((answers) => {
+              const departmentID = answers.viewByDepartment;
+              getEmpByDepartment(departmentID);
+              startProgram()
+            })
+            });
+
+    }
   })
 }
 

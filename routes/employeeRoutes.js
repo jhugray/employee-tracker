@@ -7,10 +7,10 @@ const getAllEmployees = () => {
                   employee.first_name,
                   employee.last_name,
                   role.title AS role_title,
-                  employee.manager_id,
+                  role.salary AS salary,
                   CONCAT(manager.first_name, " ", manager.last_name) as ManagerName
                   FROM employee employee
-                  JOIN employee manager
+                  LEFT JOIN employee manager
                   ON employee.manager_id = manager.id
                   LEFT JOIN role
                   ON employee.role_id = role.id`
@@ -79,13 +79,57 @@ const addEmployee = (empFirstName, empLastName, empRole, empManager) => {
   });
   };
 
-const updateEmployee = (updatedEmp, newRole) => {
+const updateEmployeeRole = (updatedEmpR, newRole) => {
   const sql = `UPDATE employee SET role_id = ? WHERE id = ?`
-  const params = [newRole, updatedEmp]
+  const params = [newRole, updatedEmpR]
   db.query(sql, params, function (err, results) {
     if (err) {
       console.log(err);
     }
+  });
+}
+
+const updateEmployeeManager = (updatedEmpM, newManager) => {
+  const sql = `UPDATE employee SET manager_id = ? WHERE id = ?`
+  const params = [newManager, updatedEmpM]
+  db.query(sql, params, function (err, results) {
+    if (err) {
+      console.log(err);
+    }
+  });
+}
+
+const getEmpByManager = (managerID) => {
+  const sql = `SELECT 
+                CONCAT(employee.first_name, " ", employee.last_name) AS name,
+                CONCAT(manager.first_name, " ", manager.last_name) as ManagerName
+                FROM employee employee
+                JOIN employee manager
+                ON employee.manager_id = manager.id  
+                WHERE manager.id = ?`
+  const params = [managerID]
+  db.query(sql, params, function (err, results) {
+    if (err) {
+      console.log(err);
+    }
+    console.table(results);
+  });
+}
+
+const getEmpByDepartment = (departmentID) => {
+  const sql = `SELECT 
+                CONCAT(first_name, " ", last_name) AS name,
+                department.title AS department,
+                FROM employee
+                LEFT JOIN department
+                ON employee.department_id = department.id
+                WHERE department.id = ?`
+  const params = [departmentID]
+  db.query(sql, params, function (err, results) {
+    if (err) {
+      console.log(err);
+    }
+    console.table(results);
   });
 }
 
@@ -97,10 +141,8 @@ module.exports = {
   addDepartment,
   addRole,
   addEmployee,
-  updateEmployee
+  updateEmployeeRole,
+  updateEmployeeManager,
+  getEmpByManager,
+  getEmpByDepartment
 }
-
-
-
-
-
