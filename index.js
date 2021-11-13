@@ -112,15 +112,13 @@ function startProgram() {
           });
           break;
         case "Add an employee":
-          db.query(
-            `SELECT id AS value, title AS name FROM role`,
-            function (err, roleResults) {
+          const addEmpSQL = `SELECT id AS value, title AS name FROM role`
+          db.query(addEmpSQL, function (err, roleResults) {
               if (err) {
                 console.log(err);
               }
-              db.query(
-                `SELECT id AS value, CONCAT(first_name, " ", last_name) AS name FROM employee`,
-                function (err, managerResults) {
+              const addEmpNameSQL = `SELECT id AS value, CONCAT(first_name, " ", last_name) AS name FROM employee`
+              db.query(addEmpNameSQL, function (err, managerResults) {
                   if (err) {
                     console.log(err);
                   }
@@ -170,15 +168,13 @@ function startProgram() {
           );
           break;
         case "Update an employee role":
-          db.query(
-            `SELECT id AS value, title AS name FROM role`,
-            function (err, roleResults) {
+          const updateEmpRoleSQL = `SELECT id AS value, title AS name FROM role`
+          db.query(updateEmpRoleSQL, function (err, roleResults) {
               if (err) {
                 console.log(err);
               }
-              db.query(
-                `SELECT id AS value, CONCAT(first_name, " ", last_name) AS name FROM employee`,
-                function (err, employeeResults) {
+              const updateEmpRoleNameSQL = `SELECT id AS value, CONCAT(first_name, " ", last_name) AS name FROM employee`
+              db.query(updateEmpRoleNameSQL, function (err, employeeResults) {
                   if (err) {
                     console.log(err);
                   }
@@ -210,15 +206,13 @@ function startProgram() {
           );
           break;
         case "Update an employee's manager":
-          db.query(
-            `SELECT manager_id AS value, CONCAT(first_name, " ", last_name) AS name FROM employee`,
-            function (err, managerResults) {
+          const managerNameUpdateEmpSQL = `SELECT manager_id AS value, CONCAT(first_name, " ", last_name) AS name FROM employee`
+          db.query(managerNameUpdateEmpSQL, function (err, managerResults) {
               if (err) {
                 console.log(err);
               }
-              db.query(
-                `SELECT id AS value, CONCAT(first_name, " ", last_name) AS name FROM employee`,
-                function (err, employeeResults) {
+              const empNameUpdateEmpSQL = `SELECT id AS value, CONCAT(first_name, " ", last_name) AS name FROM employee`
+              db.query(empNameUpdateEmpSQL, function (err, employeeResults) {
                   if (err) {
                     console.log(err);
                   }
@@ -395,11 +389,4 @@ function startProgram() {
 
 startProgram();
 
-// figure out manager "join", and class functions for holding array etc
 
-// Set up API routes, joining employee/dept tables etc as needed where data is shared.
-// Add manager ID to the employee table in the seed file
-// Set up inquirer prompts
-// Add functions within inquirer to display info
-
-//constructor class functions? cTable?

@@ -1,7 +1,7 @@
+const { start } = require('repl');
 const db = require('../db/connection');
 
 const getAllEmployees = () => {
- 
   const sql = `SELECT
                   employee.id,
                   employee.first_name,
@@ -22,17 +22,18 @@ const getAllEmployees = () => {
     if (err) {
       console.log(err);
     }
-    console.log(); 
+    console.log("The employees are:"); 
     console.table(results);
   });
 };
 
 const getAllDepartments = () => {
-  db.query(`SELECT * FROM department`, function (err, results) {
+  const sql = `SELECT * FROM department`
+  db.query(sql, function (err, results) {
     if (err) {
       console.log(err);
     }
-    console.log();
+    console.log("The departments are:");
     console.table(results);
   });
 };
@@ -47,7 +48,7 @@ const getAllRoles = () => {
     if (err) {
       console.log(err);
     } 
-    console.log(); 
+    console.log("The roles are:"); 
     console.table(results);
   });
 };
@@ -120,7 +121,7 @@ const getEmpByManager = (managerID) => {
     if (err) {
       console.log(err);
     }
-    console.log(); 
+    console.log("The employees by manager are:"); 
     console.table(results);
   });
 }
@@ -138,7 +139,7 @@ const getEmpByDepartment = (departmentID) => {
     if (err) {
       console.log(err);
     }
-    console.log(); 
+    console.log("The employees by department are:"); 
     console.table(results);
   });
 }
@@ -150,6 +151,7 @@ const deleteEmployee = (deleteEmp) => {
     if (err) {
       console.log("This employee is a manager. They cannot be deleted until you update the employees who report to them, to have a different manager.");
     }
+    console.log("Employee deleted!")
   });
 }
 
@@ -160,6 +162,7 @@ const deleteRole = (roleToDel) => {
     if (err) {
       console.log(err);
     }
+    console.log("Role deleted!")
   });
 }
 
@@ -170,6 +173,7 @@ const deleteDepartment = (deptToDel) => {
     if (err) {
       console.log(err);
     }
+    console.log("Department Deleted!")
   });
 }
 
