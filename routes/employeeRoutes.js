@@ -1,12 +1,12 @@
-const { start } = require('repl');
-const db = require('../db/connection');
+const { start } = require("repl");
+const db = require("../db/connection");
 
 const getAllEmployees = () => {
   const sql = `SELECT
                   employee.id,
                   employee.first_name,
                   employee.last_name,
-                  role.title AS role_title,
+                  role.title AS job_title,
                   department.name AS department,
                   role.salary AS salary,
                   CONCAT(manager.first_name, " ", manager.last_name) as manager_name
@@ -16,19 +16,19 @@ const getAllEmployees = () => {
                   LEFT JOIN role
                   ON employee.role_id = role.id
                   LEFT JOIN department
-                  ON role.department_id = department.id`
+                  ON role.department_id = department.id`;
 
   db.query(sql, function (err, results) {
     if (err) {
       console.log(err);
     }
-    console.log("The employees are:"); 
+    console.log("The employees are:");
     console.table(results);
   });
 };
 
 const getAllDepartments = () => {
-  const sql = `SELECT * FROM department`
+  const sql = `SELECT * FROM department`;
   db.query(sql, function (err, results) {
     if (err) {
       console.log(err);
@@ -39,16 +39,19 @@ const getAllDepartments = () => {
 };
 
 const getAllRoles = () => {
-  const sql = `SELECT role.*, department.name
-                AS department_name
+  const sql = `SELECT 
+                role.title AS job_title,
+                role.id AS role_id,
+                department.name AS department_name,
+                department.id AS department_id
                 FROM role
                 LEFT JOIN department
                 ON role.department_id = department.id`;
   db.query(sql, function (err, results) {
     if (err) {
       console.log(err);
-    } 
-    console.log("The roles are:"); 
+    }
+    console.log("The roles are:");
     console.table(results);
   });
 };
@@ -84,29 +87,29 @@ const addEmployee = (empFirstName, empLastName, empRole, empManager) => {
     }
     console.log("Employee added!");
   });
-  };
+};
 
 const updateEmployeeRole = (updatedEmpR, newRole) => {
-  const sql = `UPDATE employee SET role_id = ? WHERE id = ?`
-  const params = [newRole, updatedEmpR]
+  const sql = `UPDATE employee SET role_id = ? WHERE id = ?`;
+  const params = [newRole, updatedEmpR];
   db.query(sql, params, function (err, results) {
     if (err) {
       console.log(err);
     }
     console.log("Employee Updated!");
   });
-}
+};
 
 const updateEmployeeManager = (updatedEmpM, newManager) => {
-  const sql = `UPDATE employee SET manager_id = ? WHERE id = ?`
-  const params = [newManager, updatedEmpM]
+  const sql = `UPDATE employee SET manager_id = ? WHERE id = ?`;
+  const params = [newManager, updatedEmpM];
   db.query(sql, params, function (err, results) {
     if (err) {
       console.log(err);
     }
-    console.log ("Manager updated!");
+    console.log("Manager updated!");
   });
-}
+};
 
 const getEmpByManager = (managerID) => {
   const sql = `SELECT 
@@ -115,16 +118,16 @@ const getEmpByManager = (managerID) => {
                 FROM employee employee
                 JOIN employee manager
                 ON employee.manager_id = manager.id  
-                WHERE manager.id = ?`
-  const params = [managerID]
+                WHERE manager.id = ?`;
+  const params = [managerID];
   db.query(sql, params, function (err, results) {
     if (err) {
       console.log(err);
     }
-    console.log("The employees by manager are:"); 
+    console.log("The employees by manager are:");
     console.table(results);
   });
-}
+};
 
 const getEmpByDepartment = (departmentID) => {
   const sql = `SELECT 
@@ -133,49 +136,51 @@ const getEmpByDepartment = (departmentID) => {
                 FROM employee
                 LEFT JOIN role ON employee.role_id = role.id
                 LEFT JOIN department ON role.department_id = department.id
-                WHERE department.id = ?`
-  const params = [departmentID]
+                WHERE department.id = ?`;
+  const params = [departmentID];
   db.query(sql, params, function (err, results) {
     if (err) {
       console.log(err);
     }
-    console.log("The employees by department are:"); 
+    console.log("The employees by department are:");
     console.table(results);
   });
-}
+};
 
 const deleteEmployee = (deleteEmp) => {
-  const sql = `DELETE FROM employee WHERE id = ?`
-  const params = deleteEmp
+  const sql = `DELETE FROM employee WHERE id = ?`;
+  const params = deleteEmp;
   db.query(sql, params, function (err, results) {
     if (err) {
-      console.log("This employee is a manager. They cannot be deleted until you update the employees who report to them, to have a different manager.");
+      console.log(
+        "This employee is a manager. They cannot be deleted until you update the employees who report to them, to have a different manager."
+      );
     }
-    console.log("Employee deleted!")
+    console.log("Employee deleted!");
   });
-}
+};
 
 const deleteRole = (roleToDel) => {
-  const sql = `DELETE FROM role WHERE id = ?`
-  const params = roleToDel
+  const sql = `DELETE FROM role WHERE id = ?`;
+  const params = roleToDel;
   db.query(sql, params, function (err, results) {
     if (err) {
       console.log(err);
     }
-    console.log("Role deleted!")
+    console.log("Role deleted!");
   });
-}
+};
 
 const deleteDepartment = (deptToDel) => {
-  const sql = `DELETE FROM department WHERE id = ?`
-  const params = deptToDel
+  const sql = `DELETE FROM department WHERE id = ?`;
+  const params = deptToDel;
   db.query(sql, params, function (err, results) {
     if (err) {
       console.log(err);
     }
-    console.log("Department Deleted!")
+    console.log("Department Deleted!");
   });
-}
+};
 
 const deptBudgetUsed = (deptBudg) => {
   const sql = `SELECT department.name AS department,
@@ -185,21 +190,19 @@ const deptBudgetUsed = (deptBudg) => {
                 ON employee.role_id = role.id
                 LEFT JOIN department 
                 ON role.department_id = department.id
-                WHERE department.id = ?`
-  const params = deptBudg
+                WHERE department.id = ?`;
+  const params = deptBudg;
   db.query(sql, params, function (err, results) {
     if (err) {
       console.log(err);
     }
-    console.log("The utilized budget is:")
+    console.log("The utilized budget is:");
     console.table(results);
   });
-}
-
-
+};
 
 module.exports = {
-  getAllEmployees, 
+  getAllEmployees,
   getAllDepartments,
   getAllRoles,
   addDepartment,
@@ -212,5 +215,5 @@ module.exports = {
   deleteEmployee,
   deleteRole,
   deleteDepartment,
-  deptBudgetUsed
-}
+  deptBudgetUsed,
+};
