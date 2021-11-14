@@ -2,6 +2,8 @@ const mysql = require("mysql2");
 const db = require("./db/connection");
 const inquirer = require("inquirer");
 const cTable = require("console.table");
+const figlet = require('figlet');
+
 const {
   getAllEmployees,
   getAllDepartments,
@@ -18,10 +20,21 @@ const {
   deleteDepartment,
   deptBudgetUsed } = require("./routes/employeeRoutes");
 
-const welcomeMessage = "Employee Tracker";
+
+figlet("Employee Tracker", {
+  font: 'ANSI shadow',
+  width: 80
+}, function(err, data) {
+  if (err) {
+      console.log("Error with the ascii welcome message");
+      console.dir(err);
+      return;
+  }
+  console.log(data);
+  startProgram();
+});
 
 function startProgram() {
-  console.log(welcomeMessage);
   inquirer
     .prompt([
       {
@@ -387,6 +400,6 @@ function startProgram() {
     });
 }
 
-startProgram();
+// startProgram();
 
 
